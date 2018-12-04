@@ -113,7 +113,7 @@ zapConfig {
     // The API key to use when authenticating to the ZAP API. Defaults to a random value.
     apiKey = "mysecretapikey"
     // Additional command line parameters to use when starting ZAP. Run `zap.sh -help` to find available parameters.
-    parameters = [ '-addonupdate' ]
+    parameters = [ '-addoninstallall', '-addonupdate' ]
 }
 ```
 
