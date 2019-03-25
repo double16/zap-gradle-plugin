@@ -32,13 +32,14 @@ class ZapActiveScan extends DefaultTask implements ZapTaskHelper {
             waitForCompletion(progress, project.zapConfig.activeScanTimeout as int,
                     { zap.ascan.status(scanId).value as int },
                     {
-                        zap.ascan.scans().items.findAll { it.getStringValue('id') == scanId }.collect {
-                            "${it.getStringValue('reqCount')} requests, ${it.getStringValue('alertCount')} alerts"
-                        }.find()
-                    }
+                    zap.ascan.scans().items.findAll { it.getStringValue('id') == scanId }.collect {
+                        "${it.getStringValue('reqCount')} requests, ${it.getStringValue('alertCount')} alerts"
+                    }.find()
+                }
             )
         } else {
             progress.completed('failed', true)
         }
     }
+
 }

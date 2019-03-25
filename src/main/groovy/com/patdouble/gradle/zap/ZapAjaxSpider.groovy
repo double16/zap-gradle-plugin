@@ -29,17 +29,18 @@ class ZapAjaxSpider extends DefaultTask implements ZapTaskHelper {
         progress.start("AJAX Spidering ${project.zapConfig.applicationUrl}", 'initializing')
         zap.ajaxSpider.scan(project.zapConfig.applicationUrl, 'true', project.name, 'false').value
         waitForCompletion(progress, project.zapConfig.activeScanTimeout as int,
-                {
-                    switch (zap.ajaxSpider.status().value as String) {
-                        case 'running':
-                            return 50
-                        case 'stopped':
-                            return 100
-                    }
-                },
-                { zap.ajaxSpider.fullResults().valuesMap.size() as String }
+            {
+                switch (zap.ajaxSpider.status().value as String) {
+                    case 'running':
+                        return 50
+                    case 'stopped':
+                        return 100
+                }
+            },
+            { zap.ajaxSpider.fullResults().valuesMap.size() as String }
         )
 
         logger.info "AJAX Spider results ${zap.ajaxSpider.fullResults().toString(0)}"
     }
+
 }

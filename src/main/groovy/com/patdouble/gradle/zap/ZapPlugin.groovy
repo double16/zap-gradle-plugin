@@ -12,13 +12,21 @@ import org.gradle.api.Plugin
 
 class ZapPlugin implements Plugin<Project> {
     final static String GROUP = 'verification'
+    static final String TASK_ZAP_START = 'zapStart'
+    static final String TASK_ZAP_STOP = 'zapStop'
+    static final String TASK_ZAP_DOWNLOAD = 'zapDownload'
+    static final String TASK_ZAP_ACTIVE_SCAN = 'zapActiveScan'
+    static final String TASK_ZAP_REPORT = 'zapReport'
+    static final String TASK_ZAP_SPIDER = 'zapSpider'
+    static final String TASK_ZAP_AJAX_SPIDER = 'zapAjaxSpider'
+    static final String TASK_ZAP_INFO = 'zapInfo'
 
     void apply(Project target) {
         target.extensions.create('zapConfig', ZapPluginExtension)
 
         CharSequence zapDir = "${target.gradle.gradleUserHomeDir}/zap/${target.extensions.zapConfig.version}"
         CharSequence zapInstallDir = "${zapDir}/ZAP_${target.extensions.zapConfig.version}"
-        target.tasks.create('zapDownload', Download) {
+        target.tasks.create(TASK_ZAP_DOWNLOAD, Download) {
             CharSequence downloadUrl = "https://github.com/zaproxy/zaproxy/releases/download/${target.extensions.zapConfig.version}/ZAP_${target.extensions.zapConfig.version}_Crossplatform.zip"
 
             outputs.dir zapDir
@@ -39,9 +47,9 @@ class ZapPlugin implements Plugin<Project> {
             }
         }
 
-        target.tasks.create('zapStart', ZapStart) {
-            finalizedBy 'zapStop'
-            dependsOn 'zapDownload'
+        target.tasks.create(TASK_ZAP_START, ZapStart) {
+            finalizedBy TASK_ZAP_STOP
+            dependsOn TASK_ZAP_DOWNLOAD
             doFirst {
                 if (!target.extensions.zapConfig.zapInstallDir) {
                     target.extensions.zapConfig.zapInstallDir = "${zapDir}/ZAP_${target.extensions.zapConfig.version}"
@@ -49,35 +57,35 @@ class ZapPlugin implements Plugin<Project> {
             }
         }
 
-        target.tasks.create('zapStop', ZapStop) {
+        target.tasks.create(TASK_ZAP_STOP, ZapStop) {
             mustRunAfter target.tasks.zapStart
-            mustRunAfter 'zapActiveScan'
-            mustRunAfter 'zapReport'
+            mustRunAfter TASK_ZAP_ACTIVE_SCAN
+            mustRunAfter TASK_ZAP_REPORT
         }
 
-        target.tasks.create('zapSpider', ZapSpider) {
+        target.tasks.create(TASK_ZAP_SPIDER, ZapSpider) {
             dependsOn target.tasks.zapStart
             finalizedBy target.tasks.zapStop
         }
 
-        target.tasks.create('zapAjaxSpider', ZapAjaxSpider) {
+        target.tasks.create(TASK_ZAP_AJAX_SPIDER, ZapAjaxSpider) {
             dependsOn target.tasks.zapStart
             finalizedBy target.tasks.zapStop
         }
 
-        target.tasks.create('zapActiveScan', ZapActiveScan) {
+        target.tasks.create(TASK_ZAP_ACTIVE_SCAN, ZapActiveScan) {
             dependsOn target.tasks.zapStart
             finalizedBy target.tasks.zapStop
             mustRunAfter target.tasks.zapSpider, target.tasks.zapAjaxSpider
         }
 
-        target.tasks.create('zapReport', ZapReport) {
+        target.tasks.create(TASK_ZAP_REPORT, ZapReport) {
             dependsOn target.tasks.zapStart
             finalizedBy target.tasks.zapStop
             mustRunAfter target.tasks.zapSpider, target.tasks.zapAjaxSpider, target.tasks.zapActiveScan
         }
 
-        target.tasks.create('zapInfo', ZapInfo) {
+        target.tasks.create(TASK_ZAP_INFO, ZapInfo) {
             dependsOn target.tasks.zapStart
             finalizedBy target.tasks.zapStop
         }
