@@ -26,9 +26,9 @@ class ZapAjaxSpider extends DefaultTask implements ZapTaskHelper {
         zap.ajaxSpider.setOptionBrowserId('htmlunit')
         zap.ajaxSpider.setOptionNumberOfBrowsers(1)
         ProgressLogger progress = createProgressLogger()
-        progress.start("AJAX Spidering ${project.zapConfig.applicationUrl}", 'initializing')
-        zap.ajaxSpider.scan(project.zapConfig.applicationUrl, 'true', project.name, 'false').value
-        waitForCompletion(progress, project.zapConfig.activeScanTimeout as int,
+        progress.start("AJAX Spidering ${project.zapConfig.applicationUrl.get()}", 'initializing')
+        zap.ajaxSpider.scan(project.zapConfig.applicationUrl.get(), 'true', project.name, 'false').value
+        waitForCompletion(progress, project.zapConfig.activeScanTimeout.get() as int,
             {
                 switch (zap.ajaxSpider.status().value as String) {
                     case 'running':

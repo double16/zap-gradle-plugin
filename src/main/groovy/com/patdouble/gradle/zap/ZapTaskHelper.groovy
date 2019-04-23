@@ -10,8 +10,9 @@ import org.zaproxy.clientapi.core.ClientApi
  * Common methods used in tasks.
  */
 trait ZapTaskHelper {
+
     ProgressLogger createProgressLogger() {
-        return ((ProjectInternal) project).getServices().get(ProgressLoggerFactory).newOperation(this.class)
+        return ((ProjectInternal) project).services.get(ProgressLoggerFactory).newOperation(this.class)
     }
 
     /**
@@ -44,15 +45,16 @@ trait ZapTaskHelper {
      * Check if the ZAP process defined in the extension is listening on the proxy port.
      */
     boolean isZapRunning(ZapPluginExtension zapConfig) {
-        if (zapConfig.proxyPort) {
+        if (zapConfig.proxyPort.isPresent()) {
             try {
-                new ClientApi('localhost', zapConfig.proxyPort as int, zapConfig.apiKey as String).core.version()
-                logger.info "ZAP running on port ${zapConfig.proxyPort}"
+                new ClientApi('localhost', zapConfig.proxyPort.get() as int, zapConfig.apiKey.getOrNull() as String).core.version()
+                logger.info "ZAP running on port ${zapConfig.proxyPort.get()}"
                 return true
             } catch (IOException e) {
-                logger.debug "ZAP not running on port ${zapConfig.proxyPort}", e
+                logger.debug "ZAP not running on port ${zapConfig.proxyPort.get()}", e
             }
         }
         return false
     }
+
 }

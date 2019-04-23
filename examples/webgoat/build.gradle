@@ -24,6 +24,7 @@ apply plugin: 'com.patdouble.zap'
 zapConfig {
     applicationUrl = 'http://localhost:8080/WebGoat/start.mvc#lesson/WebGoatIntroduction.lesson'
     activeScanTimeout = "0"
+    version = 'w2019-04-15'
 }
 
 task webgoatSetup {

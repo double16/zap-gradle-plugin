@@ -10,7 +10,7 @@ Originally based off plugin found here: https://github.com/PROSPricing/zap-gradl
 
 ```groovy
 plugins { 
-    id 'com.patdouble.gradle.zap' version '2.0.2'
+    id 'com.patdouble.gradle.zap' version '2.1.0'
 }
 
 zapConfig {
@@ -47,7 +47,7 @@ The plugin is available from the Gradle plugins repository using the usual metho
 
 ```groovy
 plugins {
-    id 'com.patdouble.zap' version '2.0.2'
+    id 'com.patdouble.zap' version '2.1.0'
 }
 ```
 
@@ -86,6 +86,15 @@ zapConfig {
     zapInstallDir =  "/path/to/ZAP/install/directory"
 }
 ```
+
+Weekly builds of ZAP are also supported. See [GitHub](https://github.com/zaproxy/zaproxy/releases) for available versions.
+
+```groovy
+zapConfig {
+    version = 'w2019-04-15'
+}
+```
+
 
 ## Configure Your Application
 
@@ -134,9 +143,11 @@ zapConfig {
 The `zapStart` task will check if ZAP responds on the configured port and if so will use the running process. In this case `zapStop` will not attempt to stop the process.
 
 ## Running ZAP with Tests
-Instead of (or additional to) spidering, your existing functional tests can be used to populate the list of URLs the active scan attacks. Either run your test task between `zapStart` and `zapActiveScan` or configure Gradle task dependencies similarly.
+Instead of (or additional to) spidering, your existing functional tests can be used to populate the list of URLs the active scan attacks. Either run your test task between `zapStart` and `zapActiveScan` or configure Gradle task dependencies similarly. Assuming your functional test task is named `functionalTest`:
 
-`./gradlew zapStart taskThatRunsMyTestsWithALocalProxySetToZAPProxyPort zapActiveScan zapReport zapStop`
+`./gradlew zapStart functionalTest zapActiveScan zapReport zapStop`
+
+The `functionalTest` task (or whatever your project uses) will need to configure the proxy. See the next section for help. 
 
 ## Updating Tests to Use ZAP
 
@@ -144,8 +155,8 @@ In order for ZAP to see traffic to your app, it must be used as a proxy for thos
 
 ```groovy
 // build.gradle
-test.systemProperty 'zap.port', zapConfig.proxyPort
-test.environment['ZAP_PORT'] = zapConfig.proxyPort
+test.systemProperty 'zap.port', zapConfig.proxyPort.get()
+test.environment['ZAP_PORT'] = zapConfig.proxyPort.get()
 ```
 
 Python with httplib2:

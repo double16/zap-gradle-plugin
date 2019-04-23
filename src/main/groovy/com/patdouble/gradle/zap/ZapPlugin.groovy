@@ -1,16 +1,19 @@
 /**
- * Copyright (c) 2018, Patrick Double. All right reserved.
+ * Copyright (c) 2018-2019, Patrick Double. All right reserved.
  *
  * Released under BSD-3 style license.
  * See http://opensource.org/licenses/BSD-3-Clause
  */
 package com.patdouble.gradle.zap
 
-import de.undercouch.gradle.tasks.download.Download
+import fi.linuxbox.gradle.download.Download
 import org.gradle.api.Project
 import org.gradle.api.Plugin
+import org.gradle.api.file.RegularFile
+import org.gradle.api.provider.Provider
 
 class ZapPlugin implements Plugin<Project> {
+
     final static String GROUP = 'verification'
     static final String TASK_ZAP_START = 'zapStart'
     static final String TASK_ZAP_STOP = 'zapStop'
@@ -22,27 +25,38 @@ class ZapPlugin implements Plugin<Project> {
     static final String TASK_ZAP_INFO = 'zapInfo'
 
     void apply(Project target) {
-        target.extensions.create('zapConfig', ZapPluginExtension)
+        ZapPluginExtension zapConfig = target.extensions.create('zapConfig', ZapPluginExtension)
 
-        CharSequence zapDir = "${target.gradle.gradleUserHomeDir}/zap/${target.extensions.zapConfig.version}"
-        CharSequence zapInstallDir = "${zapDir}/ZAP_${target.extensions.zapConfig.version}"
+        Provider<String> zapInstallDir = zapConfig.version.map { "${zapConfig.zapDir.get()}/ZAP_${it}" }
         target.tasks.create(TASK_ZAP_DOWNLOAD, Download) {
-            CharSequence downloadUrl = "https://github.com/zaproxy/zaproxy/releases/download/${target.extensions.zapConfig.version}/ZAP_${target.extensions.zapConfig.version}_Crossplatform.zip"
+            Provider<String> version = zapConfig.version
+            Provider<CharSequence> downloadUrl = version.map { versionStr ->
+                if (versionStr.startsWith('w')) { // weekly
+                    "https://github.com/zaproxy/zaproxy/releases/download/${versionStr}/ZAP_WEEKLY_D-${versionStr.substring(1)}.zip"
+                } else { // release
+                    "https://github.com/zaproxy/zaproxy/releases/download/${versionStr}/ZAP_${versionStr}_Crossplatform.zip"
+                }
+            }
+            Provider<RegularFile> destinationFile = version.map { versionStr ->
+                if (versionStr.startsWith('w')) { // weekly
+                    target.layout.projectDirectory.file("${target.gradle.gradleUserHomeDir}/zap/ZAP_WEEKLY_D-${versionStr.substring(1)}.zip")
+                } else { // release
+                    target.layout.projectDirectory.file("${target.gradle.gradleUserHomeDir}/zap/ZAP_${versionStr}_Crossplatform.zip")
+                }
+            }
 
-            outputs.dir zapDir
-            onlyIf { !target.extensions.zapConfig.zapInstallDir && !new File(zapInstallDir).exists() }
+            outputs.dir zapConfig.zapDir
+            onlyIf { !zapConfig.zapInstallDir.isPresent() && !new File(zapInstallDir.get()).exists() }
 
             group = GROUP
             description = 'Download ZAP'
-            src downloadUrl
-            dest new File(target.gradle.gradleUserHomeDir, "zap/${downloadUrl.split('/').last()}")
-            overwrite false
-            tempAndMove true
+            from = downloadUrl
+            to = destinationFile
 
             doLast {
                 target.copy {
-                    from target.zipTree(dest)
-                    into zapDir
+                    from target.zipTree(destinationFile.get().getAsFile())
+                    into zapConfig.zapDir
                 }
             }
         }
@@ -51,8 +65,12 @@ class ZapPlugin implements Plugin<Project> {
             finalizedBy TASK_ZAP_STOP
             dependsOn TASK_ZAP_DOWNLOAD
             doFirst {
-                if (!target.extensions.zapConfig.zapInstallDir) {
-                    target.extensions.zapConfig.zapInstallDir = "${zapDir}/ZAP_${target.extensions.zapConfig.version}"
+                if (!zapConfig.zapInstallDir.isPresent()) {
+                    if (zapConfig.version.get().startsWith('w')) { // weekly
+                        zapConfig.zapInstallDir.set("${zapConfig.zapDir.get()}/ZAP_D-${zapConfig.version.get() - 'w'}")
+                    } else {
+                        zapConfig.zapInstallDir.set("${zapConfig.zapDir.get()}/ZAP_${zapConfig.version.get()}")
+                    }
                 }
             }
         }
@@ -90,4 +108,5 @@ class ZapPlugin implements Plugin<Project> {
             finalizedBy target.tasks.zapStop
         }
     }
+
 }

@@ -1,6 +1,6 @@
 package com.patdouble.gradle.zap
 
-import de.undercouch.gradle.tasks.download.Download
+import fi.linuxbox.gradle.download.Download
 
 import static org.junit.Assert.*
 

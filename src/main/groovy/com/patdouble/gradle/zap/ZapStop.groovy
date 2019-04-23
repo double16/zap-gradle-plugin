@@ -7,6 +7,7 @@ import org.gradle.api.tasks.TaskAction
  * Stops the ZAP server gracefully.
  */
 class ZapStop extends DefaultTask {
+
     @SuppressWarnings('LineLength')
     ZapStop() {
         group = ZapPlugin.GROUP
@@ -22,4 +23,5 @@ class ZapStop extends DefaultTask {
             project.zapConfig.zapProc.waitForOrKill(5000)
         }
     }
+
 }

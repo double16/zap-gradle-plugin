@@ -11,6 +11,7 @@ import org.zaproxy.clientapi.core.ClientApi
  */
 @Slf4j
 class ZapStart extends DefaultTask implements ZapTaskHelper {
+
     @SuppressWarnings('LineLength')
     ZapStart() {
         group = ZapPlugin.GROUP
@@ -29,15 +30,15 @@ class ZapStart extends DefaultTask implements ZapTaskHelper {
             return
         }
 
-        String workingDir = project.zapConfig.zapInstallDir
-        project.zapConfig.proxyPort = resolvePort()
+        String workingDir = project.zapConfig.zapInstallDir.get()
+        project.zapConfig.proxyPort.set(resolvePort())
 
         List<String> command = [ workingDir + File.separator + (Os.isFamily(Os.FAMILY_WINDOWS) ? 'zap.bat' : 'zap.sh'),
-                '-daemon', '-port', project.zapConfig.proxyPort, '-config', "api.key=${project.zapConfig.apiKey}" as String ]
-        command.addAll(project.zapConfig.parameters.collect { it as String })
+                '-daemon', '-port', project.zapConfig.proxyPort.get(), '-config', "api.key=${project.zapConfig.apiKey.get()}" as String ]
+        command.addAll(project.zapConfig.parameters.get().collect { it as String })
         ProcessBuilder builder = new ProcessBuilder(command)
-        File stdout = new File(project.buildDir, "${project.zapConfig.reportOutputPath}.out.log")
-        File stderr = new File(project.buildDir, "${project.zapConfig.reportOutputPath}.err.log")
+        File stdout = new File(project.buildDir, "${project.zapConfig.reportOutputPath.get()}.out.log")
+        File stderr = new File(project.buildDir, "${project.zapConfig.reportOutputPath.get()}.err.log")
         stdout.parentFile.mkdirs()
         builder.redirectOutput(stdout)
         builder.redirectError(stderr)
@@ -49,16 +50,16 @@ class ZapStart extends DefaultTask implements ZapTaskHelper {
         }
 
         ClientApi zap = new ClientApi('localhost',
-                project.zapConfig.proxyPort as int,
-                project.zapConfig.apiKey as String)
+                project.zapConfig.proxyPort.get() as int,
+                project.zapConfig.apiKey.getOrNull() as String)
         zap.waitForSuccessfulConnectionToZap(120)
 
         zap.core.setMode('protect')
     }
 
     protected String resolvePort() {
-        if (project.zapConfig.proxyPort) {
-            return project.zapConfig.proxyPort
+        if (project.zapConfig.proxyPort.isPresent()) {
+            return project.zapConfig.proxyPort.get()
         }
 
         Integer port = null
@@ -71,4 +72,5 @@ class ZapStart extends DefaultTask implements ZapTaskHelper {
         }
         return port as String
     }
+
 }

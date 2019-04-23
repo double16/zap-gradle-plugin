@@ -11,6 +11,7 @@ import org.zaproxy.clientapi.core.ClientApi
  */
 @Slf4j
 class ZapSpider extends DefaultTask implements ZapTaskHelper {
+
     @SuppressWarnings('LineLength')
     ZapSpider() {
         group = ZapPlugin.GROUP
@@ -22,12 +23,12 @@ class ZapSpider extends DefaultTask implements ZapTaskHelper {
     void activeScan() {
         ClientApi zap = project.zapConfig.api()
         ProgressLogger progress = createProgressLogger()
-        progress.start("Spidering ${project.zapConfig.applicationUrl}", 'initializing')
+        progress.start("Spidering ${project.zapConfig.applicationUrl.get()}", 'initializing')
 
-        String scanId = zap.spider.scan(project.zapConfig.applicationUrl, null, 'true', project.name, 'false').value
+        String scanId = zap.spider.scan(project.zapConfig.applicationUrl.get(), null, 'true', project.name, 'false').value
         logger.debug "Spider scan id = ${scanId}"
         if (scanId) {
-            waitForCompletion(progress, project.zapConfig.activeScanTimeout as int,
+            waitForCompletion(progress, project.zapConfig.activeScanTimeout.get() as int,
                     { zap.spider.status(scanId).value as int },
                     { zap.spider.results(scanId).items.size() as String }
             )
@@ -37,4 +38,5 @@ class ZapSpider extends DefaultTask implements ZapTaskHelper {
             progress.completed('failed', true)
         }
     }
+
 }

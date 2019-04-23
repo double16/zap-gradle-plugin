@@ -19,21 +19,21 @@ class ZapReport extends DefaultTask {
     @SuppressWarnings('UnusedMethod')
     void outputReport() {
         ClientApi zap = project.zapConfig.api()
-        new File(project.buildDir, project.zapConfig.reportOutputPath).parentFile.mkdirs()
-        String reportFormat = project.zapConfig.reportFormat ?: 'json,xml,html,md'
+        new File(project.buildDir, project.zapConfig.reportOutputPath.get()).parentFile.mkdirs()
+        String reportFormat = project.zapConfig.reportFormat.get()
         reportFormat.toLowerCase().split(/[^a-z]+/).asType(List).unique().each { format ->
             switch (format) {
                 case 'json':
-                    new File(project.buildDir, "${project.zapConfig.reportOutputPath}.json").bytes = zap.core.jsonreport()
+                    new File(project.buildDir, "${project.zapConfig.reportOutputPath.get()}.json").bytes = zap.core.jsonreport()
                     break
                 case 'xml':
-                    new File(project.buildDir, "${project.zapConfig.reportOutputPath}.xml").bytes = zap.core.xmlreport()
+                    new File(project.buildDir, "${project.zapConfig.reportOutputPath.get()}.xml").bytes = zap.core.xmlreport()
                     break
                 case 'html':
-                    new File(project.buildDir, "${project.zapConfig.reportOutputPath}.html").bytes = zap.core.htmlreport()
+                    new File(project.buildDir, "${project.zapConfig.reportOutputPath.get()}.html").bytes = zap.core.htmlreport()
                     break
                 case 'md':
-                    new File(project.buildDir, "${project.zapConfig.reportOutputPath}.md").bytes = zap.core.mdreport()
+                    new File(project.buildDir, "${project.zapConfig.reportOutputPath.get()}.md").bytes = zap.core.mdreport()
                     break
                 default:
                     throw new GradleException("Unknown report format: ${format}")

@@ -23,13 +23,13 @@ class ZapActiveScan extends DefaultTask implements ZapTaskHelper {
     void activeScan() {
         ClientApi zap = project.zapConfig.api()
         ProgressLogger progress = createProgressLogger()
-        progress.start("Active scan ${project.zapConfig.applicationUrl}", 'initializing')
+        progress.start("Active scan ${project.zapConfig.applicationUrl.get()}", 'initializing')
 
-        zap.accessUrl(project.zapConfig.applicationUrl)
-        String scanId = zap.ascan.scan(project.zapConfig.applicationUrl, 'true', '', '', '', '').value
+        zap.accessUrl(project.zapConfig.applicationUrl.get())
+        String scanId = zap.ascan.scan(project.zapConfig.applicationUrl.get(), 'true', '', '', '', '').value
         logger.debug "Active scan id = ${scanId}"
         if (scanId) {
-            waitForCompletion(progress, project.zapConfig.activeScanTimeout as int,
+            waitForCompletion(progress, project.zapConfig.activeScanTimeout.get() as int,
                     { zap.ascan.status(scanId).value as int },
                     {
                     zap.ascan.scans().items.findAll { it.getStringValue('id') == scanId }.collect {
