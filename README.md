@@ -199,7 +199,7 @@ task zapSetup {
 Using the API is essential when the application requires authentication. See the `examples` directory.
  
 ## LICENSE
-Copyright (c) 2018, Patrick Double. All right reserved.
+Copyright (c) 2018-2019, Patrick Double. All right reserved.
 
 Released under BSD-3 style license.
 
