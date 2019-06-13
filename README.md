@@ -70,7 +70,7 @@ apply plugin: "com.patdouble.zap"
 
 ## Finding the ZAP Application
 
-By default the plugin will download version 2.7.0 of OWASP ZAP and use it. You can specify a version by including the following in your `build.gradle`:
+By default the plugin will download version 2.8.0 of OWASP ZAP and use it. You can specify a version by including the following in your `build.gradle`:
 
 ```groovy
 zapConfig {

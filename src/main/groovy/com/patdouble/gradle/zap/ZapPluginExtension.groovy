@@ -81,7 +81,7 @@ class ZapPluginExtension {
 
     @Inject
     ZapPluginExtension(Gradle gradle, ObjectFactory objects) {
-        version = objects.property(String).convention('2.7.0')
+        version = objects.property(String).convention('2.8.0')
         zapDir = version.map { "${gradle.gradleUserHomeDir}/zap/${it}" }
         zapInstallDir = objects.property(String)
         proxyPort = objects.property(String)

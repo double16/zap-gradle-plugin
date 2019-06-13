@@ -33,8 +33,10 @@ class ZapPlugin implements Plugin<Project> {
             Provider<CharSequence> downloadUrl = version.map { versionStr ->
                 if (versionStr.startsWith('w')) { // weekly
                     "https://github.com/zaproxy/zaproxy/releases/download/${versionStr}/ZAP_WEEKLY_D-${versionStr.substring(1)}.zip"
-                } else { // release
+                } else if (versionStr =~ /1[.].*/ || versionStr =~ /2[.][0-7][.].*/) { // release
                     "https://github.com/zaproxy/zaproxy/releases/download/${versionStr}/ZAP_${versionStr}_Crossplatform.zip"
+                } else { // recent release
+                    "https://github.com/zaproxy/zaproxy/releases/download/v${versionStr}/ZAP_${versionStr}_Crossplatform.zip"
                 }
             }
             Provider<RegularFile> destinationFile = version.map { versionStr ->
