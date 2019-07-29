@@ -26,7 +26,7 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    compile 'org.zaproxy:zap-clientapi:1.6.0'
+    compile 'org.zaproxy:zap-clientapi:1.7.0'
     compile 'gradle.plugin.fi.linuxbox.gradle:gradle-download:0.5'
     testCompile 'junit:junit:4.12'
     testCompile gradleApi()
