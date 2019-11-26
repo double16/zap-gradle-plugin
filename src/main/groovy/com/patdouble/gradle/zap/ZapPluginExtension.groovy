@@ -2,6 +2,7 @@ package com.patdouble.gradle.zap
 
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.zaproxy.clientapi.core.ClientApi
@@ -71,7 +72,7 @@ class ZapPluginExtension {
      * 	-addonupdate             Update all changed add-ons from the ZAP Marketplace
      * 	-addonlist               List all of the installed add-ons
      */
-    Property<List<String>> parameters
+    ListProperty<String> parameters
 
     /**
      * ZAP process started by the ZapStart task. May not be populated if the #proxyPort points to an already
@@ -90,7 +91,7 @@ class ZapPluginExtension {
         applicationUrl = objects.property(String)
         activeScanTimeout = objects.property(String).convention('300')
         apiKey = objects.property(String).convention(UUID.randomUUID() as String)
-        parameters = objects.property(List).convention([])
+        parameters = objects.listProperty(String).convention([])
     }
 
     /**

@@ -5,4 +5,8 @@
  * See http://opensource.org/licenses/BSD-3-Clause
  */
 
+plugins {
+    id "com.gradle.enterprise" version "3.1"
+}
+
 rootProject.name = 'zap-gradle-plugin'

@@ -47,7 +47,10 @@ trait ZapTaskHelper {
     boolean isZapRunning(ZapPluginExtension zapConfig) {
         if (zapConfig.proxyPort.isPresent()) {
             try {
-                new ClientApi('localhost', zapConfig.proxyPort.get() as int, zapConfig.apiKey.getOrNull() as String).core.version()
+                new ClientApi(
+                        'localhost',
+                        zapConfig.proxyPort.get() as int,
+                        zapConfig.apiKey.getOrNull() as String).core.version()
                 logger.info "ZAP running on port ${zapConfig.proxyPort.get()}"
                 return true
             } catch (IOException e) {

@@ -6,7 +6,7 @@
  */
 package com.patdouble.gradle.zap
 
-import fi.linuxbox.gradle.download.Download
+import de.undercouch.gradle.tasks.download.Download
 import org.gradle.api.Project
 import org.gradle.api.Plugin
 import org.gradle.api.file.RegularFile
@@ -52,8 +52,8 @@ class ZapPlugin implements Plugin<Project> {
 
             group = GROUP
             description = 'Download ZAP'
-            from = downloadUrl
-            to = destinationFile
+            src { downloadUrl.get() }
+            dest { destinationFile.get().asFile }
 
             doLast {
                 target.copy {
