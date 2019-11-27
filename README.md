@@ -10,7 +10,7 @@ Originally based off plugin found here: https://github.com/PROSPricing/zap-gradl
 
 ```groovy
 plugins { 
-    id 'com.patdouble.gradle.zap' version '2.1.0'
+    id 'com.patdouble.gradle.zap' version '2.9.0'
 }
 
 zapConfig {
@@ -47,7 +47,7 @@ The plugin is available from the Gradle plugins repository using the usual metho
 
 ```groovy
 plugins {
-    id 'com.patdouble.zap' version '2.1.0'
+    id 'com.patdouble.zap' version '2.9.0'
 }
 ```
 
