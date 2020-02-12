@@ -25,9 +25,9 @@ repositories {
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
-    implementation 'org.zaproxy:zap-clientapi:1.7.0'
+    implementation 'org.zaproxy:zap-clientapi:1.8.0'
     implementation 'de.undercouch:gradle-download-task:4.0.2'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     testImplementation gradleApi()
     clover 'org.openclover:clover:4.4.1'
 }

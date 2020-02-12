@@ -82,7 +82,7 @@ class ZapPluginExtension {
 
     @Inject
     ZapPluginExtension(Gradle gradle, ObjectFactory objects) {
-        version = objects.property(String).convention('2.8.0')
+        version = objects.property(String).convention('2.9.0')
         zapDir = version.map { "${gradle.gradleUserHomeDir}/zap/${it}" }
         zapInstallDir = objects.property(String)
         proxyPort = objects.property(String)
@@ -95,7 +95,7 @@ class ZapPluginExtension {
     }
 
     /**
-     * Get an instance of ClienApi with the host, port and API key set.
+     * Get an instance of ClientApi with the host, port and API key set.
      */
     ClientApi api() {
         new ClientApi('localhost', proxyPort.get() as int, apiKey.get())
