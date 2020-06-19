@@ -4,4 +4,4 @@ services:
   dvwa:
     image: vulnerables/web-dvwa:latest
     ports:
-      - 8095:80
+      - 80

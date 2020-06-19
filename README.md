@@ -1,16 +1,16 @@
 # ZAP Gradle Plugin
 
-Automate web application dynamic security scans using [OWASP ZAP](https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project).
+Automate web application dynamic security scans using [OWASP ZAP](https://www.zaproxy.org/).
 
 Nearly all operations of ZAP can be automated using this plugin thanks to the ZAP API. Spidering and Active Scan are provided as tasks.
- 
+
 Originally based off plugin found here: https://github.com/PROSPricing/zap-gradle-plugin
 
 ## TL;DR
 
 ```groovy
-plugins { 
-    id 'com.patdouble.gradle.zap' version '2.9.0'
+plugins {
+    id 'com.patdouble.zap' version '2.9.0'
 }
 
 zapConfig {
@@ -70,7 +70,7 @@ apply plugin: "com.patdouble.zap"
 
 ## Finding the ZAP Application
 
-By default the plugin will download version 2.8.0 of OWASP ZAP and use it. You can specify a version by including the following in your `build.gradle`:
+By default the plugin will download version 2.9.0 of OWASP ZAP and use it. You can specify a version by including the following in your `build.gradle`:
 
 ```groovy
 zapConfig {
@@ -130,7 +130,7 @@ zapConfig {
 It can be useful when debugging your build to use a ZAP instance running in GUI mode. This allows you to see what the ZAP plugin is causing ZAP to do and to experiment with options in the GUI to see how that affects the spidering, active scan, etc.
 
 Start ZAP and fill in the `zapConfig` options below.
- 
+
 ```groovy
 zapConfig {
     // Preferences -> Options -> Local Proxies -> Port
@@ -147,7 +147,7 @@ Instead of (or additional to) spidering, your existing functional tests can be u
 
 `./gradlew zapStart functionalTest zapActiveScan zapReport zapStop`
 
-The `functionalTest` task (or whatever your project uses) will need to configure the proxy. See the next section for help. 
+The `functionalTest` task (or whatever your project uses) will need to configure the proxy. See the next section for help.
 
 ## Updating Tests to Use ZAP
 
@@ -197,9 +197,9 @@ task zapSetup {
 ```
 
 Using the API is essential when the application requires authentication. See the `examples` directory.
- 
+
 ## LICENSE
-Copyright (c) 2018-2019, Patrick Double. All right reserved.
+Copyright (c) 2018-2020, Patrick Double. All right reserved.
 
 Released under BSD-3 style license.
 

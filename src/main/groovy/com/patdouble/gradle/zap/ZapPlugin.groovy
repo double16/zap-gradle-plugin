@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018-2019, Patrick Double. All right reserved.
+ * Copyright (c) 2018-2020, Patrick Double. All right reserved.
  *
  * Released under BSD-3 style license.
  * See http://opensource.org/licenses/BSD-3-Clause

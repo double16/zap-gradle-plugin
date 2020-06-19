@@ -11,22 +11,27 @@ buildscript {
     }
     dependencies {
         classpath 'com.patdouble:zap-gradle-plugin:2.+'
-        classpath 'org.apache.httpcomponents:httpclient:4.5.3'
-        classpath 'io.github.http-builder-ng:http-builder-ng-core:1.0.3'
+        classpath 'org.apache.httpcomponents:httpclient:4.5.12'
+        classpath 'io.github.http-builder-ng:http-builder-ng-core:1.0.4'
     }
 }
 
 plugins {
-    id "com.avast.gradle.docker-compose" version "0.8.12"
-    id 'com.github.ben-manes.versions' version '0.21.0'
+    id "com.avast.gradle.docker-compose" version "0.12.1"
+    id 'com.github.ben-manes.versions' version '0.28.0'
 }
 
 apply plugin: 'com.patdouble.zap'
 
 zapConfig {
-    applicationUrl = 'http://localhost:8095'
+    // Let docker-compose pick a random port number to avoid conflicts
+    applicationUrl = project.objects.property(String).convention('').map {
+        def host = dockerCompose.servicesInfos.dvwa.firstContainer.host
+        def port = dockerCompose.servicesInfos.dvwa.firstContainer.ports[80]
+        "http://${host}:${port}"
+    }
     activeScanTimeout = "0"
-    version = 'w2019-04-15'
+    version = 'w2020-06-15'
 }
 
 def userTokenFromHtml(html) {
@@ -40,7 +45,7 @@ def userTokenFromHtml(html) {
 task dvwaSetup {
     doLast {
         def dvwa = HttpBuilder.configure {
-            request.uri = 'http://localhost:8095'
+            request.uri = zapConfig.applicationUrl.get()
         }
         def loginForm = dvwa.get {
             request.uri.path = '/login.php'
@@ -83,12 +88,12 @@ task zapSetup(dependsOn: [zapStart, dvwaSetup]) {
         zapConfig.api {
             // based on https://github.com/zaproxy/zaproxy/issues/2093
             project.ext.contextId = context.newContext(project.name).value
-            context.includeInContext(project.name, "\\Qhttp://localhost:8095\\E.*")
-            context.excludeFromContext(project.name, "\\Qhttp://localhost:8095/login.php\\E")
-            context.excludeFromContext(project.name, "\\Qhttp://localhost:8095/logout.php\\E")
-            context.excludeFromContext(project.name, "\\Qhttp://localhost:8095/setup.php\\E")
-            context.excludeFromContext(project.name, "\\Qhttp://localhost:8095/security.php\\E")
-            context.excludeFromContext(project.name, "\\Qhttp://localhost:8095/vulnerabilities/csrf\\E.*")
+            context.includeInContext(project.name, "\\Q${zapConfig.applicationUrl.get()}\\E.*")
+            context.excludeFromContext(project.name, "\\Q${zapConfig.applicationUrl.get()}/login.php\\E")
+            context.excludeFromContext(project.name, "\\Q${zapConfig.applicationUrl.get()}/logout.php\\E")
+            context.excludeFromContext(project.name, "\\Q${zapConfig.applicationUrl.get()}/setup.php\\E")
+            context.excludeFromContext(project.name, "\\Q${zapConfig.applicationUrl.get()}/security.php\\E")
+            context.excludeFromContext(project.name, "\\Q${zapConfig.applicationUrl.get()}/vulnerabilities/csrf\\E.*")
             logger.info "Context ID = ${project.ext.contextId}"
 
             if (!(delegate.script.listScripts().items.find { it.getStringValue('name') == 'dvwa-auth' })) {
@@ -97,7 +102,7 @@ task zapSetup(dependsOn: [zapStart, dvwaSetup]) {
 
             String scriptBasedAuthParams = URLEncodedUtils.format([
                     new BasicNameValuePair('scriptName', 'dvwa-auth'),
-                    new BasicNameValuePair('Login URL', 'http://localhost:8095/login.php'),
+                    new BasicNameValuePair('Login URL', "${zapConfig.applicationUrl.get()}/login.php"),
                     new BasicNameValuePair('CSRF Field', 'user_token'),
                     new BasicNameValuePair('POST Data', 'username={%username%}&password={%password%}&Login=Login&user_token={%user_token%}')
             ], "UTF-8")
