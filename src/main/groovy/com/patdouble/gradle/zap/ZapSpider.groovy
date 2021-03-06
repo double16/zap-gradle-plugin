@@ -1,5 +1,6 @@
 package com.patdouble.gradle.zap
 
+import groovy.transform.CompileDynamic
 import groovy.util.logging.Slf4j
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -9,6 +10,7 @@ import org.zaproxy.clientapi.core.ClientApi
 /**
  * Executes a ZAP spider against the applicationUrl. This task will wait until the scan is complete before returning.
  */
+@CompileDynamic
 @Slf4j
 class ZapSpider extends DefaultTask implements ZapTaskHelper {
 

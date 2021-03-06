@@ -7,11 +7,13 @@
 package com.patdouble.gradle.zap
 
 import de.undercouch.gradle.tasks.download.Download
-import org.gradle.api.Project
+import groovy.transform.CompileDynamic
 import org.gradle.api.Plugin
+import org.gradle.api.Project
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 
+@CompileDynamic
 class ZapPlugin implements Plugin<Project> {
 
     final static String GROUP = 'verification'

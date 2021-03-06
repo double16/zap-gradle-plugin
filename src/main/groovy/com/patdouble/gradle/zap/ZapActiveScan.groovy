@@ -1,5 +1,6 @@
 package com.patdouble.gradle.zap
 
+import groovy.transform.CompileDynamic
 import groovy.util.logging.Slf4j
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -10,8 +11,10 @@ import org.zaproxy.clientapi.core.ClientApi
  * Executes a ZAP active scan against the applicationUrl. This task will wait until the scan is
  * complete before returning.
  */
+@CompileDynamic
 @Slf4j
 class ZapActiveScan extends DefaultTask implements ZapTaskHelper {
+
     @SuppressWarnings('LineLength')
     ZapActiveScan() {
         group = ZapPlugin.GROUP
@@ -32,10 +35,10 @@ class ZapActiveScan extends DefaultTask implements ZapTaskHelper {
             waitForCompletion(progress, project.zapConfig.activeScanTimeout.get() as int,
                     { zap.ascan.status(scanId).value as int },
                     {
-                    zap.ascan.scans().items.findAll { it.getStringValue('id') == scanId }.collect {
-                        "${it.getStringValue('reqCount')} requests, ${it.getStringValue('alertCount')} alerts"
-                    }.find()
-                }
+                        zap.ascan.scans().items.findAll { it.getStringValue('id') == scanId }.collect {
+                            "${it.getStringValue('reqCount')} requests, ${it.getStringValue('alertCount')} alerts"
+                        }.find()
+                    }
             )
         } else {
             progress.completed('failed', true)

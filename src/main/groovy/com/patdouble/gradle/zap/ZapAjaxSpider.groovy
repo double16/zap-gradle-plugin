@@ -1,5 +1,6 @@
 package com.patdouble.gradle.zap
 
+import groovy.transform.CompileDynamic
 import groovy.util.logging.Slf4j
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -10,8 +11,10 @@ import org.zaproxy.clientapi.core.ClientApi
  * Executes a ZAP AJAX spider against the applicationUrl. This task will wait until the scan is
  * complete before returning.
  */
+@CompileDynamic
 @Slf4j
 class ZapAjaxSpider extends DefaultTask implements ZapTaskHelper {
+
     @SuppressWarnings('LineLength')
     ZapAjaxSpider() {
         group = ZapPlugin.GROUP
@@ -29,15 +32,15 @@ class ZapAjaxSpider extends DefaultTask implements ZapTaskHelper {
         progress.start("AJAX Spidering ${project.zapConfig.applicationUrl.get()}", 'initializing')
         zap.ajaxSpider.scan(project.zapConfig.applicationUrl.get(), 'true', project.name, 'false').value
         waitForCompletion(progress, project.zapConfig.activeScanTimeout.get() as int,
-            {
-                switch (zap.ajaxSpider.status().value as String) {
-                    case 'running':
-                        return 50
-                    case 'stopped':
-                        return 100
-                }
-            },
-            { zap.ajaxSpider.fullResults().valuesMap.size() as String }
+                {
+                    switch (zap.ajaxSpider.status().value as String) {
+                        case 'running':
+                            return 50
+                        case 'stopped':
+                            return 100
+                    }
+                },
+                { zap.ajaxSpider.fullResults().valuesMap.size() as String }
         )
 
         logger.info "AJAX Spider results ${zap.ajaxSpider.fullResults().toString(0)}"

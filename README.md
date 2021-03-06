@@ -10,7 +10,7 @@ Originally based off plugin found here: https://github.com/PROSPricing/zap-gradl
 
 ```groovy
 plugins {
-    id 'com.patdouble.zap' version '2.9.0'
+    id 'com.patdouble.zap' version '2.10.1'
 }
 
 zapConfig {
@@ -47,7 +47,7 @@ The plugin is available from the Gradle plugins repository using the usual metho
 
 ```groovy
 plugins {
-    id 'com.patdouble.zap' version '2.9.0'
+    id 'com.patdouble.zap' version '2.10.1'
 }
 ```
 
@@ -70,7 +70,7 @@ apply plugin: "com.patdouble.zap"
 
 ## Finding the ZAP Application
 
-By default the plugin will download version 2.9.0 of OWASP ZAP and use it. You can specify a version by including the following in your `build.gradle`:
+By default the plugin will download version 2.10.0 of OWASP ZAP and use it. You can specify a version by including the following in your `build.gradle`:
 
 ```groovy
 zapConfig {
@@ -199,7 +199,7 @@ task zapSetup {
 Using the API is essential when the application requires authentication. See the `examples` directory.
 
 ## LICENSE
-Copyright (c) 2018-2020, Patrick Double. All right reserved.
+Copyright (c) 2018-2021, Patrick Double. All right reserved.
 
 Released under BSD-3 style license.
 

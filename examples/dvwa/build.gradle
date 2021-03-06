@@ -31,7 +31,7 @@ zapConfig {
         "http://${host}:${port}"
     }
     activeScanTimeout = "0"
-    version = 'w2020-06-15'
+    version = 'w2021-03-01'
 }
 
 def userTokenFromHtml(html) {

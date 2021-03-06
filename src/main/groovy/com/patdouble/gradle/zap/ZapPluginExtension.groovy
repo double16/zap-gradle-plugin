@@ -1,5 +1,6 @@
 package com.patdouble.gradle.zap
 
+import groovy.transform.CompileDynamic
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
@@ -9,6 +10,7 @@ import org.zaproxy.clientapi.core.ClientApi
 
 import javax.inject.Inject
 
+@CompileDynamic
 class ZapPluginExtension {
 
     /** The version of ZAP to download, if zapInstallDir is not defined. */
@@ -82,7 +84,7 @@ class ZapPluginExtension {
 
     @Inject
     ZapPluginExtension(Gradle gradle, ObjectFactory objects) {
-        version = objects.property(String).convention('2.9.0')
+        version = objects.property(String).convention('2.10.0')
         zapDir = version.map { "${gradle.gradleUserHomeDir}/zap/${it}" }
         zapInstallDir = objects.property(String)
         proxyPort = objects.property(String)
@@ -104,14 +106,11 @@ class ZapPluginExtension {
     /**
      * Call a closure with a ClientApi instance as the delegate. This allows things like:
      *
-     * zapConfig.api {
-     *     spider.setOptionAcceptCookies(true)
+     * zapConfig.api {*     spider.setOptionAcceptCookies(true)
      *     ascan.setOptionHandleAntiCSRFTokens(true)
-     * }
-     */
+     *}*/
     void api(Closure closure) {
         closure.delegate = api()
         closure.call()
     }
-
 }

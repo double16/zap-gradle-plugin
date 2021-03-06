@@ -1,5 +1,6 @@
 package com.patdouble.gradle.zap
 
+import groovy.transform.CompileDynamic
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.zaproxy.clientapi.core.ApiResponse
@@ -8,7 +9,9 @@ import org.zaproxy.clientapi.core.ClientApiException
 /**
  * Logs information about the ZAP server configuration.
  */
+@CompileDynamic
 class ZapInfo extends DefaultTask {
+
     @SuppressWarnings('LineLength')
     ZapInfo() {
         group = ZapPlugin.GROUP
@@ -19,7 +22,7 @@ class ZapInfo extends DefaultTask {
         try {
             ((ApiResponse) closure.call()).toString(0)
         } catch (ClientApiException e) {
-            "${e.toString()}, ${e.code}, ${e.detail}"
+            "${e}, ${e.code}, ${e.detail}"
         }
     }
 

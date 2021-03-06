@@ -1,5 +1,6 @@
 package com.patdouble.gradle.zap
 
+import groovy.transform.CompileDynamic
 import org.gradle.api.GradleException
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.internal.logging.progress.ProgressLogger
@@ -9,6 +10,7 @@ import org.zaproxy.clientapi.core.ClientApi
 /**
  * Common methods used in tasks.
  */
+@CompileDynamic
 trait ZapTaskHelper {
 
     ProgressLogger createProgressLogger() {

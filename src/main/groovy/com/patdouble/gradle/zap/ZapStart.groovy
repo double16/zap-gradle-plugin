@@ -1,5 +1,6 @@
 package com.patdouble.gradle.zap
 
+import groovy.transform.CompileDynamic
 import groovy.util.logging.Slf4j
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.DefaultTask
@@ -9,6 +10,7 @@ import org.zaproxy.clientapi.core.ClientApi
 /**
  * Starts the ZAP daemon. This will persist after the gradle run if stopZap is not called.
  */
+@CompileDynamic
 @Slf4j
 class ZapStart extends DefaultTask implements ZapTaskHelper {
 
@@ -33,8 +35,8 @@ class ZapStart extends DefaultTask implements ZapTaskHelper {
         String workingDir = project.zapConfig.zapInstallDir.get()
         project.zapConfig.proxyPort.set(resolvePort())
 
-        List<String> command = [ workingDir + File.separator + (Os.isFamily(Os.FAMILY_WINDOWS) ? 'zap.bat' : 'zap.sh'),
-                '-daemon', '-port', project.zapConfig.proxyPort.get(), '-config', "api.key=${project.zapConfig.apiKey.get()}" as String ]
+        List<String> command = [workingDir + File.separator + (Os.isFamily(Os.FAMILY_WINDOWS) ? 'zap.bat' : 'zap.sh'),
+                                '-daemon', '-port', project.zapConfig.proxyPort.get(), '-config', "api.key=${project.zapConfig.apiKey.get()}" as String]
         command.addAll(project.zapConfig.parameters.get().collect { it as String })
         ProcessBuilder builder = new ProcessBuilder(command)
         File stdout = new File(project.buildDir, "${project.zapConfig.reportOutputPath.get()}.out.log")

@@ -1,5 +1,6 @@
 package com.patdouble.gradle.zap
 
+import groovy.transform.CompileDynamic
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
@@ -8,7 +9,9 @@ import org.zaproxy.clientapi.core.ClientApi
 /**
  * Grabs the alert report from the running ZAP instances.
  */
+@CompileDynamic
 class ZapReport extends DefaultTask {
+
     @SuppressWarnings('LineLength')
     ZapReport() {
         group = ZapPlugin.GROUP

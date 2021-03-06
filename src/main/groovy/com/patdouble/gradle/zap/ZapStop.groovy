@@ -1,11 +1,13 @@
 package com.patdouble.gradle.zap
 
+import groovy.transform.CompileDynamic
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 /**
  * Stops the ZAP server gracefully.
  */
+@CompileDynamic
 class ZapStop extends DefaultTask {
 
     @SuppressWarnings('LineLength')
